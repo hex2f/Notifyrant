@@ -1,0 +1,26 @@
+{
+  "name": "notifrant",
+  "version": "1.0.0",
+  "description": "A Notifyer For devRant",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RekkyRek/Notifyrant.git"
+  },
+  "keywords": [
+    "devRant"
+  ],
+  "author": "RekkyRek",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RekkyRek/Notifyrant/issues"
+  },
+  "homepage": "https://github.com/RekkyRek/Notifyrant#readme",
+  "dependencies": {
+    "node-notifier": "^5.1.2",
+    "rantscript": "^1.1.1"
+  }
+}
