@@ -1,6 +1,41 @@
 const notifier = require('node-notifier');
 const rantscript = require('rantscript');
 
+const {app, BrowserWindow} = require('electron');
+const path = require('path');
+const url = require('url');
+
+let win
+
+function createWindow () {
+  win = new BrowserWindow({width: 350, height: 120, frame: false, resizable: false})
+  win.setAlwaysOnTop(true);
+  win.loadURL(url.format({
+    pathname: path.join(__dirname, 'notification.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
+
+
+  win.on('closed', () => {
+    win = null
+  })
+}
+
+app.on('ready', createWindow)
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
+
+app.on('activate', () => {
+  if (win === null) {
+    createWindow()
+  }
+})
+
 // Object
 notifier.notify({
   'title': 'My notification',
