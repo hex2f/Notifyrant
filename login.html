@@ -7,10 +7,39 @@
     <link rel="stylesheet" href="./style/login.css">
   </head>
   <body>
+    <div id="error"><p>Login failed.</p></div>
     <h4>Login to devRant</h4>
-    <input type="text" placeholder="Username" id="username">
-    <input type="password" placeholder="Password" id="password">
+    <div id="inputcontainer">
+      <input type="text" placeholder="Username" id="username">
+      <input type="password" placeholder="Password" id="password">
+    </div>
     <button id="login">Login</button>
     <button id="close">Close</button>
+    <script type="text/javascript">
+      const app = require('electron').remote.require('./index')
+      const {ipcRenderer} = require('electron')
+
+      function login() {
+        app.login(username.value, password.value)
+        document.getElementById('login').disabled = true;
+      }
+
+      function close() {
+        app.quitApp()
+      }
+
+      app.time()
+
+      ipcRenderer.on('loginError', (event, arg) => {
+        document.getElementById('error').style.top = '0px';
+        document.getElementById('login').disabled = false;
+        setTimeout(()=>{
+          document.getElementById('error').style.top = '-54px';
+        },2500);
+      })
+
+      document.getElementById('login').onclick = login;
+      document.getElementById('close').onclick = close;
+    </script>
   </body>
 </html>

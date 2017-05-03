@@ -4,25 +4,37 @@ body, html {
   margin: 0px;
   overflow: hidden;
   font-family: 'Roboto', sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 body * {
-  -webkit-app-region: no-drag;
+  user-select: none;
+  cursor: default;
 }
 h4 {
   text-align: center;
   font-weight: 300 !important;
 }
+#inputcontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100% - 125px)
+}
 input {
   border: none;
   border-bottom: 1px solid #ddd;
   padding: 12px;
+  user-select: all;
+  cursor: text;
+  margin: 8px;
+  -webkit-app-region: no-drag;
 }
-
 input:focus {
   outline: none;
   border-bottom: 1px solid #aaa;
 }
-
 button {
   margin: 0px;
   padding: 12px;
@@ -31,12 +43,40 @@ button {
   position: absolute;
   bottom: 0px;
   left: 0px;
+  cursor: pointer;
+  text-align: center;
+  background: #d25363;
+  color: #fff;
+  transition: background 0.2s;
+  -webkit-app-region: no-drag;
 }
-
 button:focus {
   outline: none;
 }
-
+button:hover {
+  background: #b74e5b;
+}
+button:disabled {
+  background: #eee !important;
+  color: #aaa;
+}
 #close {
   left: 50vw !important;
+  background: #eee;
+  color: #000;
+}
+#close:hover {
+  background: #ddd !important;
+}
+#error {
+  background: #d24b4b;
+  color: #fff;
+  width: 100%;
+  position: fixed;
+  top: -54px;
+  left: 0px;
+  transition: top 0.3s;
+}
+#error p {
+  padding: 0px 12px;
 }

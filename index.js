@@ -1,4 +1,5 @@
 const rantscript = require('rantscript');
+rantscript.httpSettings.SET_DEBUG(false);
 
 const {app, BrowserWindow} = require('electron');
 const path = require('path');
@@ -9,40 +10,87 @@ if (typeof localStorage === "undefined" || localStorage === null) {
   localStorage = new LocalStorage('./rantscript');
 }
 
-let auth = localStorage.getItem('token');
+let auth = JSON.parse(localStorage.getItem('token'));
+let authwin;
+let rantWatcher;
+let notifs = {};
+
 if(auth == undefined || auth == null) {
   app.on('ready', () => {
-    var authwin = new BrowserWindow({width: 350, height: 275, frame: false, resizable: false});
+    authwin = new BrowserWindow({width: 300, height: 300, frame: false, resizable: true});
     authwin.loadURL(url.format({
       pathname: path.join(__dirname, 'login.html'),
       protocol: 'file:',
       slashes: true
     }))
     authwin.on('closed', () => {
-      win[i] = null
+      authwin = null
     })
   })
+} else {
+  registerRantListener();
 }
 
 let win = []
 
-function createNotif () {
-  win.push(new BrowserWindow({width: 350, height: 120, frame: false, resizable: false}));
+function createNotif (data, user) {
+  win.push(new BrowserWindow({width: 450, height: 120, frame: false, resizable: true, show: false}));
   var i = win.length-1;
-  win[i].setAlwaysOnTop(true);
-  win[i].loadURL(url.format({
+  var w = win[i];
+
+  w.loadURL(url.format({
     pathname: path.join(__dirname, 'notification.html'),
     protocol: 'file:',
     slashes: true
   }))
 
+  w.once('ready-to-show', () => {
+    w.show();
+    w.setAlwaysOnTop(true);
+    w.webContents.send('notifData', [data, user]);
+  })
 
-  win[i].on('closed', () => {
+  w.on('closed', () => {
     win[i] = null
+    console.log('closed')
   })
 }
+
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+
 })
+
+function login(username, password) {
+  rantscript
+    .login(username, password)
+    .then((resp) => {
+      console.log(resp)
+      localStorage.setItem('token', JSON.stringify(resp.auth_token));
+      auth = resp.auth_token;
+      registerRantListener();
+      authwin.close()
+    })
+    .catch((err)=>{
+      authwin.webContents.send('loginError' , err);
+    })
+}
+
+let newNotifs = [];
+let lastCheck = Math.floor(new Date() / 1000) - 2000;
+function registerRantListener() {
+  rantWatcher = setInterval(()=>{
+    rantscript
+      .notifications(auth, lastCheck)
+      .then((resp)=>{
+        lastCheck = resp.data.check_time;
+        for (var i = 0; i < resp.data.items.length; i++) {
+          var data = resp.data.items[i];
+          var user = resp.data.username_map[data.uid];
+          createNotif(data, user)
+        }
+      })
+  },5000);
+}
+
+exports.login = login;
+exports.quitApp = app.quit;

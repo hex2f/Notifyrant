@@ -2,15 +2,62 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>devRant</title>
     <style>
       body, html {
         background: transparent;
+        font: menu;
+        display: flex;
+        overflow: hidden;
+        margin: 0px;
+      }
+      #notifimage {
+        height: 120px;
+        width: 120px;
+        border: none;
+      }
+      #info {
+        flex: 1;
+        padding-left: 12px;
+      }
+      #desc {
+        margin: 0px;
       }
     </style>
   </head>
   <body>
-    <h4>Notification</h4>
-    <p>Meme Test</p>
+    <img src="https://avatars.devrant.io/v-11_c-3_b-5_g-m_9-1_1-1_16-14_3-2_8-3_7-3_5-3_12-1_6-3_10-9_2-54_11-2_4-3_19-2_21-2.jpg" id="notifimage"/>
+    <div id="info">
+      <h4 id="header">devRant</h4>
+      <p id="desc">Meme Machinenene</p>
+    </div>
+    <script type="text/javascript">
+      const { ipcRenderer } = require('electron');
+      const nuts = require('./nuts');
+      var mention = "<b>[:name]</b> mentioned you in a comment.";
+      var oneupd = "<b>[:name]</b> +1'd your rant.";
+      var rantcomment = "<b>[:name]</b> commented on your rant.";
+      var commentoneupd = "<b>[:name]</b> +1'd your comment.";
+      ipcRenderer.on('notifData', function (serder, store) {
+        console.log(store)
+        header.innerHTML = store[1].name;
+        notifimage.style.background = `#${store[1].avatar.b}`;
+        notifimage.src = `https://avatars.devrant.io/${store[1].avatar.i}`;
+        switch (store[0].type) {
+          case 'comment_mention':
+            desc.innerHTML = nuts(mention, {name:store[1].name});
+            break;
+          case 'comment_vote':
+            desc.innerHTML = nuts(oneupd, {name:store[1].name});
+            break;
+          case 'content_vote':
+            desc.innerHTML = nuts(commentoneupd, {name:store[1].name});
+            break;
+          case 'comment_content':
+            desc.innerHTML = nuts(rantcomment, {name:store[1].name});
+            break;
+        }
+      });
+    </script>
   </body>
 </html>
