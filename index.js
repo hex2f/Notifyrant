@@ -1,43 +1,48 @@
-const notifier = require('node-notifier');
 const rantscript = require('rantscript');
 
 const {app, BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
 
-let win
+if (typeof localStorage === "undefined" || localStorage === null) {
+  var LocalStorage = require('node-localstorage').LocalStorage;
+  localStorage = new LocalStorage('./rantscript');
+}
 
-function createWindow () {
-  win = new BrowserWindow({width: 350, height: 120, frame: false, resizable: false})
-  win.setAlwaysOnTop(true);
-  win.loadURL(url.format({
+let auth = localStorage.getItem('token');
+if(auth == undefined || auth == null) {
+  app.on('ready', () => {
+    var authwin = new BrowserWindow({width: 350, height: 275, frame: false, resizable: false});
+    authwin.loadURL(url.format({
+      pathname: path.join(__dirname, 'login.html'),
+      protocol: 'file:',
+      slashes: true
+    }))
+    authwin.on('closed', () => {
+      win[i] = null
+    })
+  })
+}
+
+let win = []
+
+function createNotif () {
+  win.push(new BrowserWindow({width: 350, height: 120, frame: false, resizable: false}));
+  var i = win.length-1;
+  win[i].setAlwaysOnTop(true);
+  win[i].loadURL(url.format({
     pathname: path.join(__dirname, 'notification.html'),
     protocol: 'file:',
     slashes: true
   }))
 
 
-  win.on('closed', () => {
-    win = null
+  win[i].on('closed', () => {
+    win[i] = null
   })
 }
-
-app.on('ready', createWindow)
-
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
-
-app.on('activate', () => {
-  if (win === null) {
-    createWindow()
-  }
-})
-
-// Object
-notifier.notify({
-  'title': 'My notification',
-  'message': 'Hello, there!'
-});

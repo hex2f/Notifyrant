@@ -21,6 +21,7 @@
   "homepage": "https://github.com/RekkyRek/Notifyrant#readme",
   "dependencies": {
     "electron": "^1.4.14",
+    "node-localstorage": "^1.3.0",
     "node-notifier": "^5.1.2",
     "rantscript": "^1.1.1"
   }

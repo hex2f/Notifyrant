@@ -1,0 +1,42 @@
+body, html {
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  overflow: hidden;
+  font-family: 'Roboto', sans-serif;
+}
+body * {
+  -webkit-app-region: no-drag;
+}
+h4 {
+  text-align: center;
+  font-weight: 300 !important;
+}
+input {
+  border: none;
+  border-bottom: 1px solid #ddd;
+  padding: 12px;
+}
+
+input:focus {
+  outline: none;
+  border-bottom: 1px solid #aaa;
+}
+
+button {
+  margin: 0px;
+  padding: 12px;
+  border: none;
+  width: 50%;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+
+button:focus {
+  outline: none;
+}
+
+#close {
+  left: 50vw !important;
+}
